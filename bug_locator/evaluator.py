@@ -63,9 +63,9 @@ def calculate_mean_average_precision_at_k():
                     print(current_bug_data['bug_id'],suspicious_files[i], " relevant")
                     number_of_relevant_files = number_of_relevant_files + 1                        
                     precision = precision + (number_of_relevant_files/(i+1))
-                    print("precision ", precision)
+                    # print("precision ", precision)
             average_precision = precision/len(fixed_files)
-            print("average_precision" ,average_precision, len(fixed_files))
+            # print("average_precision" ,average_precision, len(fixed_files))
             total_average_precision = total_average_precision + average_precision
             total_bug = total_bug + 1
         mean_average_precision = total_average_precision/total_bug
