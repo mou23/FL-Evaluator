@@ -7,7 +7,7 @@ def get_bug_data(xml_path,result_directory):
     bug_ids = list(bug_wise_suspicious_filenames.keys())
     bugs = []
     
-    # print(bug_ids)
+    print(bug_ids)
     tree = ET.parse(xml_path)
     root = tree.getroot()
     for table in root.findall(".//table"):

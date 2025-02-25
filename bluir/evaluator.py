@@ -1,7 +1,8 @@
 from bug_data_processor import get_bug_data
+import sys
 
-result_directory = '../../dataset/temp/BLUiR_test_run_2/recommended'
-bug_report_file = '../../dataset/aspectj-filtered.xml'
+result_directory = sys.argv[1] #'../../dataset/temp/BLUiR_test_run_2/recommended'
+bug_report_file = sys.argv[2] #'../../dataset/aspectj-filtered.xml'
 bug_data = get_bug_data(bug_report_file, result_directory)
 
 def calculate_accuracy_at_k():
@@ -12,7 +13,8 @@ def calculate_accuracy_at_k():
             # print(current_bug_data['bug_id'])
             suspicious_files = current_bug_data['suspicious_files'].split(",")
             # print(suspicious_files)
-            fixed_files = current_bug_data['files'].split("\n")
+            fixed_files = current_bug_data['files'].split('.java')
+            fixed_files = [(file + '.java').strip() for file in fixed_files[:-1]]
             # length_of_fixed_files = len(fixed_files)
             # fixed_files[length_of_fixed_files-1] = fixed_files[length_of_fixed_files-1].replace('.java','')
             # print(fixed_files) 
@@ -32,7 +34,8 @@ def calculate_mean_reciprocal_rank_at_k():
         for current_bug_data in bug_data:
             suspicious_files = current_bug_data['suspicious_files'].split(",")
             length_of_suspicious_files = len(suspicious_files)
-            fixed_files = current_bug_data['files'].split("\n")
+            fixed_files = current_bug_data['files'].split('.java')
+            fixed_files = [(file + '.java').strip() for file in fixed_files[:-1]]
             minimum_length = min(top,length_of_suspicious_files)
             for i in range(minimum_length):
                 if(suspicious_files[i] in fixed_files):
@@ -54,7 +57,8 @@ def calculate_mean_average_precision_at_k():
             precision = 0
             suspicious_files = current_bug_data['suspicious_files'].split(",")
             length_of_suspicious_files = len(suspicious_files)
-            fixed_files = current_bug_data['files'].split("\n")
+            fixed_files = current_bug_data['files'].split('.java')
+            fixed_files = [(file + '.java').strip() for file in fixed_files[:-1]]
             number_of_relevant_files = 0
             minimum_length = min(top,length_of_suspicious_files)
             for i in range(minimum_length):
