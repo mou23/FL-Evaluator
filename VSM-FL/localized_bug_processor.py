@@ -44,8 +44,9 @@ def create_csv(data):
             writer.writerow(row)
 
 
-project = sys.argv[1]     
-with open(project+'/results.json', 'r') as file:
+project = sys.argv[1]
+result_path = sys.argv[2]     
+with open(result_path+'/results.json', 'r') as file:
     data = json.load(file)
 
 create_csv(data)
