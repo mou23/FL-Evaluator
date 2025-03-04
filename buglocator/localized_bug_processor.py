@@ -30,7 +30,7 @@ def create_csv():
             total_bug = total_bug + 1
         print(f'accuracy@{top}: {count}/{total_bug} ({(count*100/total_bug):.2f}%)')
     
-    with open(project+'_accuracy_results.csv', 'w', newline='') as csvfile:
+    with open('localized_bugs_'+project+'.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         
         writer.writerow(['Accuracy@1', 'Accuracy@5', 'Accuracy@10'])
