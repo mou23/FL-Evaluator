@@ -18,7 +18,7 @@ def calculate_accuracy_at_k(data):
                     count = count + 1
                     break
             total_bug = total_bug + 1
-        print('accuracy@', top, count, total_bug, (count*100/total_bug))
+        print('accuracy@', top, count, total_bug, round((count*100/total_bug), 2))
 
 def calculate_mean_reciprocal_rank_at_k(data):
     for top in [10, 20, 30, 40, 50]:
@@ -38,7 +38,7 @@ def calculate_mean_reciprocal_rank_at_k(data):
         if inverse_rank == 0:
             print("MRR@", top, 0)
         else:
-            print("MRR@", top, (1/total_bug)*inverse_rank)
+            print("MRR@", top, round((1/total_bug)*inverse_rank, 3))
 
 def calculate_mean_average_precision_at_k(data):
     for top in [10, 20, 30, 40, 50]:
@@ -64,7 +64,7 @@ def calculate_mean_average_precision_at_k(data):
             total_average_precision = total_average_precision + average_precision
             total_bug = total_bug + 1
         mean_average_precision = total_average_precision/total_bug
-        print("MAP@", top, mean_average_precision)
+        print("MAP@", top, round(mean_average_precision, 3))
 
 project = sys.argv[1]     
 with open(project+'/results.json', 'r') as file:
