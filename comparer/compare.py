@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
             brtracer = BRTracerEvaluator(
                 f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}",
-                f"/pub/ryasir/FL-BRTracer/dataset/{project}-updated-data.xml"
+                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
             )
             values.append(brtracer.calculate_accuracy_at_k(top_k))
 
