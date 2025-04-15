@@ -20,32 +20,32 @@ if __name__ == '__main__':
             values = []
 
             vsm = VSMEvaluator(
-                "/pub/ryasir/FL-VSM/results-{version}/BLUiR_{project}"
-                "/pub/ryasir/FL-VSM/dataset/{project}-filtered.xml"
+                f"/pub/ryasir/FL-VSM/results-{version}/BLUiR_{project}"
+                f"/pub/ryasir/FL-VSM/dataset/{project}-filtered.xml"
             )
             values.append(vsm.calculate_accuracy_at_k(top_k))
 
             buglocator = BugLocatorEvaluator(
-                "/pub/ryasir/FL-Buglocator/results-{version}/Buglocator_{project}"
-                "/pub/ryasir/FL-Buglocator/dataset/{project}-filtered.xml"
+                f"/pub/ryasir/FL-Buglocator/results-{version}/Buglocator_{project}"
+                f"/pub/ryasir/FL-Buglocator/dataset/{project}-filtered.xml"
             )
             values.append(buglocator.calculate_accuracy_at_k(top_k))
 
             bluir = BluirEvaluator(
-                "/pub/ryasir/FL-Bluir/results-{version}/BLUiR_{project}/recommended"
-                "/pub/ryasir/FL-Bluir/dataset/{project}-filtered.xml"
+                f"/pub/ryasir/FL-Bluir/results-{version}/BLUiR_{project}/recommended"
+                f"/pub/ryasir/FL-Bluir/dataset/{project}-filtered.xml"
             )
             values.append(bluir.calculate_accuracy_at_k(top_k))
 
             brtracer = BRTracerEvaluator(
-                "/pub/ryasir/FL-BRTracer/results-{version}/BLUiR_aspectj/recommended"
-                "/pub/ryasir/FL-BRTracer/dataset/{project}-filtered.xml"
+                f"/pub/ryasir/FL-BRTracer/results-{version}/BLUiR_aspectj/recommended"
+                f"/pub/ryasir/FL-BRTracer/dataset/{project}-filtered.xml"
             )
             values.append(brtracer.calculate_accuracy_at_k(top_k))
 
             dreamloc = DreamLocEvaluator(
-                "/pub/ryasir/dream_loc/{project}_ranked_result_mapped.csv"
-                "/pub/ryasir/FL-Bluir/dataset/{project}-filtered.xml"
+                f"/pub/ryasir/dream_loc/{project}_ranked_result_mapped.csv"
+                f"/pub/ryasir/FL-Bluir/dataset/{project}-filtered.xml"
             )
             values.append(dreamloc.calculate_accuracy_at_k(top_k))
 
