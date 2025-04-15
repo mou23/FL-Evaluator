@@ -25,7 +25,7 @@ if __name__ == '__main__':
             values.append(vsm.calculate_accuracy_at_k(top_k))
 
             buglocator = BugLocatorEvaluator(
-                f"/pub/ryasir/FL-Buglocator/results-{version}/Buglocator_{project}",
+                f"/pub/ryasir/FL-Buglocator/results-{version}/BugLocator_{project}",
                 f"/pub/ryasir/FL-Buglocator/dataset/{project}-filtered.xml"
             )
             values.append(buglocator.calculate_accuracy_at_k(top_k))
@@ -37,7 +37,7 @@ if __name__ == '__main__':
             values.append(bluir.calculate_accuracy_at_k(top_k))
 
             brtracer = BRTracerEvaluator(
-                f"/pub/ryasir/FL-BRTracer/results-{version}/BLUiR_aspectj/recommended",
+                f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}/recommended",
                 f"/pub/ryasir/FL-BRTracer/dataset/{project}-filtered.xml"
             )
             values.append(brtracer.calculate_accuracy_at_k(top_k))
