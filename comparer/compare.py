@@ -37,7 +37,7 @@ if __name__ == '__main__':
             values.append(bluir.calculate_accuracy_at_k(top_k))
 
             brtracer = BRTracerEvaluator(
-                f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}/recommended",
+                f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}",
                 f"/pub/ryasir/FL-BRTracer/dataset/{project}-updated-data.xml"
             )
             values.append(brtracer.calculate_accuracy_at_k(top_k))
