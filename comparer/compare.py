@@ -54,7 +54,8 @@ if __name__ == '__main__':
 
         # Plot the difference values
         plt.figure(figsize=(10, 6))
-        plt.bar(df["Technique"], df["difference"], color='skyblue')
+        colors = ['green' if diff > 0 else 'red' for diff in df["difference"]]
+        plt.bar(df["Technique"], df["difference"], color=colors)
         plt.xlabel("Technique")
         plt.ylabel("Difference (Baseline - Clean)")
         plt.title(f"Difference in Accuracy for Project: {project}")
