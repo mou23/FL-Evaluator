@@ -1,15 +1,15 @@
-from bug_data_processor import get_bug_data
-import sys
+from .bug_data_processor import get_bug_data
 
-result_directory = sys.argv[1] #'../../dataset/temp/BugLocator_test_run'
-bug_report_file = sys.argv[2] #'../../dataset/aspectj-filtered.xml'
-bug_data = get_bug_data(bug_report_file, result_directory)
+class BugLocatorEvaluator:
+    def __init__(self, result_directory, bug_report_file):
+        self.result_directory = result_directory
+        self.bug_report_file = bug_report_file
+        self.bug_data = get_bug_data(bug_report_file, result_directory)
 
-def calculate_accuracy_at_k():
-    for top in [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:
+    def calculate_accuracy_at_k(self, k):
         count = 0
         total_bug = 0
-        for current_bug_data in bug_data:
+        for current_bug_data in self.bug_data:
             # print(current_bug_data['bug_id'])
             suspicious_files = current_bug_data['suspicious_files'].split(",")
             # print(suspicious_files)
@@ -20,23 +20,22 @@ def calculate_accuracy_at_k():
             # print(fixed_files) 
             # print(suspicious_files[0:top])
             for fixed_file in fixed_files:
-                if fixed_file in suspicious_files[0:top]:
+                if fixed_file in suspicious_files[0:k]:
                     print(current_bug_data['bug_id'],fixed_file)
                     count = count + 1
                     break
             total_bug = total_bug + 1
-        print('accuracy@', top, count, total_bug, round((count*100/total_bug), 2))
+        return round((count*100/total_bug), 2)
 
-def calculate_mean_reciprocal_rank_at_k():
-    for top in [10, 20, 30, 40, 50]:
+    def calculate_mean_reciprocal_rank_at_k(self, k):
         total_bug = 0
         inverse_rank = 0
-        for current_bug_data in bug_data:
+        for current_bug_data in self.bug_data:
             suspicious_files = current_bug_data['suspicious_files'].split(",")
             length_of_suspicious_files = len(suspicious_files)
             fixed_files = current_bug_data['files'].split('.java')
             fixed_files = [(file + '.java').strip() for file in fixed_files[:-1]]
-            minimum_length = min(top,length_of_suspicious_files)
+            minimum_length = min(k,length_of_suspicious_files)
             for i in range(minimum_length):
                 if(suspicious_files[i] in fixed_files):
                     print('first rank', current_bug_data['bug_id'], i+1, suspicious_files[i])
@@ -44,15 +43,14 @@ def calculate_mean_reciprocal_rank_at_k():
                     break
             total_bug = total_bug + 1
         if inverse_rank == 0:
-            print("MRR@", top, 0)
+            return 0
         else:
-            print("MRR@", top, round((1/total_bug)*inverse_rank, 3))
+            return round((1/total_bug)*inverse_rank, 3)
 
-def calculate_mean_average_precision_at_k():
-    for top in [10, 20, 30, 40, 50]:
+    def calculate_mean_average_precision_at_k(self, k):
         total_bug = 0
         total_average_precision = 0
-        for current_bug_data in bug_data:
+        for current_bug_data in self.bug_data:
             average_precision = 0
             precision = 0
             suspicious_files = current_bug_data['suspicious_files'].split(",")
@@ -60,7 +58,7 @@ def calculate_mean_average_precision_at_k():
             fixed_files = current_bug_data['files'].split('.java')
             fixed_files = [(file + '.java').strip() for file in fixed_files[:-1]]
             number_of_relevant_files = 0
-            minimum_length = min(top,length_of_suspicious_files)
+            minimum_length = min(k,length_of_suspicious_files)
             for i in range(minimum_length):
                 # print("i",i)
                 if(suspicious_files[i] in fixed_files):
@@ -73,8 +71,5 @@ def calculate_mean_average_precision_at_k():
             total_average_precision = total_average_precision + average_precision
             total_bug = total_bug + 1
         mean_average_precision = total_average_precision/total_bug
-        print("MAP@", top, round(mean_average_precision, 3))
+        return round(mean_average_precision, 3)
 
-calculate_accuracy_at_k()
-calculate_mean_reciprocal_rank_at_k()
-calculate_mean_average_precision_at_k()

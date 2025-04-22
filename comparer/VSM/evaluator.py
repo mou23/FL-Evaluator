@@ -1,11 +1,15 @@
-import sys
 import json
 
-def calculate_accuracy_at_k(data):
-    for top in [1, 5, 10, 15, 20, 25, 30]:
+class VSMEvaluator:
+    def __init__(self, project_name) -> None:
+        with open(project_name+'/results.json', 'r') as file:
+            data = json.load(file)
+        self.data = data
+
+    def calculate_accuracy_at_k(self, k):
         count = 0
         total_bug = 0
-        for key, value in data.items():
+        for key, value in self.data.items():
             # print(key)
             suspicious_files = value['results']
             # print(suspicious_files)
@@ -13,22 +17,21 @@ def calculate_accuracy_at_k(data):
             # print(fixed_files) 
             # print(suspicious_files[0:top])
             for fixed_file in fixed_files:
-                if fixed_file in suspicious_files[0:top]:
+                if fixed_file in suspicious_files[0:k]:
                     print(key,fixed_file)
                     count = count + 1
                     break
             total_bug = total_bug + 1
-        print('accuracy@', top, count, total_bug, round((count*100/total_bug), 2))
+        return round((count*100/total_bug), 2)
 
-def calculate_mean_reciprocal_rank_at_k(data):
-    for top in [10, 20, 30, 40, 50]:
+    def calculate_mean_reciprocal_rank_at_k(self, k):
         total_bug = 0
         inverse_rank = 0
-        for key, value in data.items():
+        for key, value in self.data.items():
             suspicious_files = value['results']
             length_of_suspicious_files = len(suspicious_files)
             fixed_files = value['truth']
-            minimum_length = min(top,length_of_suspicious_files)
+            minimum_length = min(k, length_of_suspicious_files)
             for i in range(minimum_length):
                 if(suspicious_files[i] in fixed_files):
                     print('first rank', key, i+1, suspicious_files[i])
@@ -36,22 +39,21 @@ def calculate_mean_reciprocal_rank_at_k(data):
                     break
             total_bug = total_bug + 1
         if inverse_rank == 0:
-            print("MRR@", top, 0)
+            return 0
         else:
-            print("MRR@", top, round((1/total_bug)*inverse_rank, 3))
+            return round((1/total_bug)*inverse_rank, 3)
 
-def calculate_mean_average_precision_at_k(data):
-    for top in [10, 20, 30, 40, 50]:
+    def calculate_mean_average_precision_at_k(self, k):
         total_bug = 0
         total_average_precision = 0
-        for key, value in data.items():
+        for key, value in self.data.items():
             average_precision = 0
             precision = 0
             suspicious_files = value['results']
             length_of_suspicious_files = len(suspicious_files)
             fixed_files = value['truth']
             number_of_relevant_files = 0
-            minimum_length = min(top,length_of_suspicious_files)
+            minimum_length = min(k, length_of_suspicious_files)
             for i in range(minimum_length):
                 # print("i",i)
                 if(suspicious_files[i] in fixed_files):
@@ -64,12 +66,4 @@ def calculate_mean_average_precision_at_k(data):
             total_average_precision = total_average_precision + average_precision
             total_bug = total_bug + 1
         mean_average_precision = total_average_precision/total_bug
-        print("MAP@", top, round(mean_average_precision, 3))
-
-project = sys.argv[1]     
-with open(project+'/results.json', 'r') as file:
-    data = json.load(file)
-
-calculate_accuracy_at_k(data)
-calculate_mean_reciprocal_rank_at_k(data)
-calculate_mean_average_precision_at_k(data)
+        return round(mean_average_precision, 3)
