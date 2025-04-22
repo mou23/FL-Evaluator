@@ -3,7 +3,8 @@ import sys
 
 result_file = sys.argv[1] #'tomcat_ranked_result_mapped.csv'
 bug_report_file = sys.argv[2] #'../../dataset/tomcat-updated-data.xml'
-bug_data = get_bug_data(bug_report_file, result_file)
+index = sys.argv[3]
+bug_data = get_bug_data(bug_report_file, result_file, index)
 
 def calculate_accuracy_at_k():
     for top in [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]:

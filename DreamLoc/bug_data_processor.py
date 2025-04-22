@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 from suspicious_filenames_retriever import extract_suspicious_filenames_for_all_bugs
 
-def get_bug_data(xml_path,result_file):
+def get_bug_data(xml_path,result_file, index=0):
     bug_wise_suspicious_filenames = extract_suspicious_filenames_for_all_bugs(result_file)
     bug_ids = list(bug_wise_suspicious_filenames.keys())
     
@@ -21,7 +21,10 @@ def get_bug_data(xml_path,result_file):
     bugs = sorted(bugs, key=lambda d: d['fixed_commit_time'])
 
     length = len(bugs)
-    starting_index = length - int(length*0.4)
+    if index==0:
+        starting_index = length - int(length*0.4)
+    else:
+        starting_index = index
     test_bugs = bugs[starting_index:length]
     
     for bug in test_bugs:
