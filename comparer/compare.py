@@ -61,13 +61,14 @@ if __name__ == '__main__':
     versions = ["baseline", "clean"]
     techniques = ["VSM", "BugLocator", "BLUiR", "BRTracer", "DreamLoc"]
 
+    usage = "Usage: python compare.py <metric>(accuracy, map, mrr) <top_k> (1, 5, 10)"
     if len(sys.argv) != 3:
-        print("Usage: python compare.py <top_k> <metric>")
+        print(usage)
         sys.exit(1)
 
     if sys.argv[1] not in [1, 5, 10] \
         or sys.argv[2] not in ["accuracy", "map", "mrr"]:
-        print("Invalid arguments. Please provide a valid top_k (1, 5, 10, 20) and metric (accuracy, map, mrr).")
+        print(usage)
         sys.exit(1)
 
     metric = sys.argv[1]  # accuracy, map, mrr
