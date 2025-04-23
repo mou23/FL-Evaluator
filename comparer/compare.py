@@ -62,7 +62,7 @@ if __name__ == '__main__':
     techniques = ["VSM", "BugLocator", "BLUiR", "BRTracer", "DreamLoc"]
 
     usage = "Usage: python compare.py <metric>(accuracy, map, mrr) <top_k> (1, 5, 10)"
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 2:
         print(usage)
         sys.exit(1)
 
