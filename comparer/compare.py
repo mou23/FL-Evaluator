@@ -65,13 +65,13 @@ if __name__ == '__main__':
         print("Usage: python compare.py <top_k> <metric>")
         sys.exit(1)
 
-    if sys.argv[1] not in ["1", "5", "10"] \
+    if sys.argv[1] not in [1, 5, 10] \
         or sys.argv[2] not in ["accuracy", "map", "mrr"]:
         print("Invalid arguments. Please provide a valid top_k (1, 5, 10, 20) and metric (accuracy, map, mrr).")
         sys.exit(1)
 
     metric = sys.argv[1]  # accuracy, map, mrr
-    top_k = sys.argv[2]
+    top_k = int(sys.argv[2])
 
     for project in projects:
         df = pd.DataFrame(columns=["Technique"] + versions)
