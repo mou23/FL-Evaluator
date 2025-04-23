@@ -82,5 +82,5 @@ if __name__ == '__main__':
             evaluators = create_evaluators(project, version)
             df[version] = [compute_metric(metric, ev, top_k) for ev in evaluators]
 
-        df["change"] = (df["clean"] - df["baseline"]) / df["baseline"] * 100
+        df["change"] = ((df["clean"] - df["baseline"]) / df["baseline"] * 100).round(2)
         df.to_csv(f"{project}_{metric}_k@{top_k}.csv", index=False)
