@@ -42,7 +42,7 @@ def create_evaluators(project, version):
     else:
         evaluators.append(DreamLocEvaluator(
             f"/pub/ryasir/dream_loc/{project}_ranked_result_mapped.csv",
-            f"/pub/ryasir/dream_loc/data/reports/{dreamloc_mp[project]}",
+            f"/pub/ryasir/dream_loc/data/reports/{dreamloc_mp[project][0]}",
             dreamloc_mp[project][1]
         ))
 
