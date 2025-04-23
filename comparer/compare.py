@@ -1,5 +1,5 @@
+import sys
 import pandas as pd
-import matplotlib.pyplot as plt
 
 from buglocator.evaluator import BugLocatorEvaluator
 from bluir.evaluator import BluirEvaluator
@@ -7,149 +7,79 @@ from BRTracer.evaluator import BRTracerEvaluator
 from VSM.evaluator import VSMEvaluator
 from DreamLoc.evaluator import DreamLocEvaluator
 
-projects = ["aspectj", "birt", "eclipse", "swt", "jdt", "tomcat"]
-versions = ["baseline", "clean"]
-techniques = ["VSM", "BugLocator", "BLUiR", "BRTracer", "DreamLoc"]
-top_k = 1
+dreamloc_mp = {
+    "aspectj": ("AspectJ.xml", 220),
+    "birt": ("Birt.xml", 1879),
+    "eclipse": ("Eclipse_Platform_UI.xml", 2116),
+    "jdt": ("JDT.xml", 2110),
+    "swt": ("SWT.xml", 1971),
+    "tomcat": ("Tomcat.xml", 405)
+}
 
-def plot_graph(df, project, metric):
-    plt.figure(figsize=(10, 6))
-    colors = ['green' if diff > 0 else 'red' for diff in df["difference"]]
-    plt.bar(df["Technique"], df["difference"], color=colors)
-    plt.xlabel("Technique")
-    plt.ylabel("Percentage change (%)")
-    plt.title(f"Percentage Change (Cleaned vs Baseline) for {project}")
-    plt.xticks(rotation=45)
-    plt.tight_layout()
+def create_evaluators(project, version):
+    evaluators = [
+        VSMEvaluator(
+            f"/pub/ryasir/FL-VSM/results-{version}/{project}",
+        ),
+        BugLocatorEvaluator(
+            f"/pub/ryasir/FL-Buglocator/results-{version}/BugLocator_{project}",
+            f"/pub/ryasir/FL-Buglocator/dataset/{project}-updated-data.xml"
+        ),
+        BluirEvaluator(
+            f"/pub/ryasir/FL-Bluir/results-{version}/BLUiR_{project}/recommended",
+            f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
+        ),
+        BRTracerEvaluator(
+            f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}",
+            f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
+        ),
+    ]
+    if version == "baseline":
+        evaluators.append(DreamLocEvaluator(
+            f"/pub/ryasir/original_results_dreamloc/{project}_ranked_result_mapped.csv",
+            f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
+        ))
+    else:
+        evaluators.append(DreamLocEvaluator(
+            f"/pub/ryasir/dream_loc/{project}_ranked_result_mapped.csv",
+            f"/pub/ryasir/dream_loc/data/reports/{dreamloc_mp[project]}",
+            dreamloc_mp[project][1]
+        ))
 
-    plt.savefig(f"{project}_{metric}.png")
+    return evaluators
 
-def do_for_accuracy():
-    for project in projects:
-        df = pd.DataFrame(columns=["technique", "baseline", "clean"])
-        df["Technique"] = techniques
-        for version in versions:
-            values = []
-
-            vsm = VSMEvaluator(
-                f"/pub/ryasir/FL-VSM/results-{version}/{project}",
-            )
-            values.append(vsm.calculate_accuracy_at_k(top_k))
-
-            buglocator = BugLocatorEvaluator(
-                f"/pub/ryasir/FL-Buglocator/results-{version}/BugLocator_{project}",
-                f"/pub/ryasir/FL-Buglocator/dataset/{project}-updated-data.xml"
-            )
-            values.append(buglocator.calculate_accuracy_at_k(top_k))
-
-            bluir = BluirEvaluator(
-                f"/pub/ryasir/FL-Bluir/results-{version}/BLUiR_{project}/recommended",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(bluir.calculate_accuracy_at_k(top_k))
-
-            brtracer = BRTracerEvaluator(
-                f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(brtracer.calculate_accuracy_at_k(top_k))
-
-            dreamloc = DreamLocEvaluator(
-                f"/pub/ryasir/dream_loc/{project}_ranked_result_mapped.csv",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(dreamloc.calculate_accuracy_at_k(top_k))
-
-            df[f"{version}"] = values
-
-        df["difference"] =  (df["clean"] - df["baseline"]) / df["baseline"] * 100
-        plot_graph(df, project, "accuracy")
-
-def do_for_map():
-    for project in projects:
-        df = pd.DataFrame(columns=["technique", "baseline", "clean"])
-        df["Technique"] = techniques
-        for version in versions:
-            values = []
-
-            vsm = VSMEvaluator(
-                f"/pub/ryasir/FL-VSM/results-{version}/{project}",
-            )
-            values.append(vsm.calculate_mean_average_precision_at_k(top_k))
-
-            buglocator = BugLocatorEvaluator(
-                f"/pub/ryasir/FL-Buglocator/results-{version}/BugLocator_{project}",
-                f"/pub/ryasir/FL-Buglocator/dataset/{project}-updated-data.xml"
-            )
-            values.append(buglocator.calculate_mean_average_precision_at_k(top_k))
-
-            bluir = BluirEvaluator(
-                f"/pub/ryasir/FL-Bluir/results-{version}/BLUiR_{project}/recommended",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(bluir.calculate_mean_average_precision_at_k(top_k))
-
-            brtracer = BRTracerEvaluator(
-                f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(brtracer.calculate_mean_average_precision_at_k(top_k))
-
-            dreamloc = DreamLocEvaluator(
-                f"/pub/ryasir/dream_loc/{project}_ranked_result_mapped.csv",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(dreamloc.calculate_mean_average_precision_at_k(top_k))
-
-            df[f"{version}"] = values
-
-        df["change"] =  (df["clean"] - df["baseline"]) / df["baseline"] * 100
-        plot_graph(df, project, "map")
-
-def do_for_mrr():
-    for project in projects:
-        df = pd.DataFrame(columns=["technique", "baseline", "clean"])
-        df["Technique"] = techniques
-        for version in versions:
-            values = []
-
-            vsm = VSMEvaluator(
-                f"/pub/ryasir/FL-VSM/results-{version}/{project}",
-            )
-            values.append(vsm.calculate_mean_reciprocal_rank_at_k(top_k))
-
-            buglocator = BugLocatorEvaluator(
-                f"/pub/ryasir/FL-Buglocator/results-{version}/BugLocator_{project}",
-                f"/pub/ryasir/FL-Buglocator/dataset/{project}-updated-data.xml"
-            )
-            values.append(buglocator.calculate_mean_reciprocal_rank_at_k(top_k))
-
-            bluir = BluirEvaluator(
-                f"/pub/ryasir/FL-Bluir/results-{version}/BLUiR_{project}/recommended",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(bluir.calculate_mean_reciprocal_rank_at_k(top_k))
-
-            brtracer = BRTracerEvaluator(
-                f"/pub/ryasir/FL-BRTracer/results-{version}/BRTracer_{project}",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(brtracer.calculate_mean_reciprocal_rank_at_k(top_k))
-
-            dreamloc = DreamLocEvaluator(
-                f"/pub/ryasir/dream_loc/{project}_ranked_result_mapped.csv",
-                f"/pub/ryasir/FL-Bluir/dataset/{project}-updated-data.xml"
-            )
-            values.append(dreamloc.calculate_mean_reciprocal_rank_at_k(top_k))
-
-            df[f"{version}"] = values
-
-        df["change"] =  (df["clean"] - df["baseline"]) / df["baseline"] * 100
-        plot_graph(df, project, "mrr")
+def compute_metric(metric_name, evaluator, top_k):
+    method_map = {
+        "accuracy": evaluator.calculate_accuracy_at_k,
+        "map": evaluator.calculate_mean_average_precision_at_k,
+        "mrr": evaluator.calculate_mean_reciprocal_rank_at_k
+    }
+    return method_map[metric_name](top_k)
 
 if __name__ == '__main__':
-    do_for_accuracy()
-    # do_for_map()
-    # do_for_mrr()
+    projects = ["aspectj", "birt", "eclipse", "swt", "jdt", "tomcat"]
+    versions = ["baseline", "clean"]
+    techniques = ["VSM", "BugLocator", "BLUiR", "BRTracer", "DreamLoc"]
 
+    if len(sys.argv) != 3:
+        print("Usage: python compare.py <top_k> <metric>")
+        sys.exit(1)
 
+    if sys.argv[1] not in ["1", "5", "10"] \
+        or sys.argv[2] not in ["accuracy", "map", "mrr"]:
+        print("Invalid arguments. Please provide a valid top_k (1, 5, 10, 20) and metric (accuracy, map, mrr).")
+        sys.exit(1)
+
+    metric = sys.argv[1]  # accuracy, map, mrr
+    top_k = sys.argv[2]
+
+    for project in projects:
+        df = pd.DataFrame(columns=["Technique"] + versions)
+        df["Technique"] = techniques
+
+        for version in versions:
+            evaluators = create_evaluators(project, version)
+            df[version] = [compute_metric(metric, ev, top_k) for ev in evaluators]
+
+        df["change"] = (df["clean"] - df["baseline"]) / df["baseline"] * 100
+        df.to_csv(f"{project}_{metric}_k@{top_k}.csv", index=False)

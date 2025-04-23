@@ -1,10 +1,10 @@
 from .bug_data_processor import get_bug_data
 
 class DreamLocEvaluator:
-    def __init__(self, result_file, bug_report_file) -> None:
+    def __init__(self, result_file, bug_report_file, index = 0) -> None:
         self.result_file = result_file
         self.bug_report_file = bug_report_file
-        self.bug_data = get_bug_data(bug_report_file, result_file)
+        self.bug_data = get_bug_data(bug_report_file, result_file, index)
 
     def calculate_accuracy_at_k(self, k):
         count = 0
