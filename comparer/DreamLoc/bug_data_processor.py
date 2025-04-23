@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from suspicious_filenames_retriever import extract_suspicious_filenames_for_all_bugs
+from DreamLoc.suspicious_filenames_retriever import extract_suspicious_filenames_for_all_bugs
 
 def get_bug_data(xml_path,result_file, index=0):
     bug_wise_suspicious_filenames = extract_suspicious_filenames_for_all_bugs(result_file)
