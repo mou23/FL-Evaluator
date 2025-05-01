@@ -5,7 +5,7 @@ from bug_data_retriever import get_bug_data
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="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",
+    api_key="**",
 )
 
 
