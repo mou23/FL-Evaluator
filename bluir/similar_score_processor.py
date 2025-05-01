@@ -29,3 +29,5 @@ def calculate_avg_similarity_scores():
                     break
 
             writer.writerow([current_bug_data["bug_id"], avg_score, similarity_score_of_first_correct_file])
+
+calculate_avg_similarity_scores()
