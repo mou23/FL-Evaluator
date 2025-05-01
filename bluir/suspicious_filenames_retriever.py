@@ -5,7 +5,7 @@ def extract_suspicious_file_data_for_a_bug(file_path):
         suspicious_files = {}
         for line in file:
             parts = line.split()
-            similarity_score = parts[1]
+            similarity_score = float(parts[1])
             if len(parts) > 2:
                 suspicious_file=' '.join(parts[2:])
                 suspicious_files[suspicious_file] = similarity_score
