@@ -27,21 +27,20 @@ def process_similarity_scores():
 
 def get_bug_data(directory_path):
     bugs = []
-    for root, dirs, files in os.walk(directory_path):
-        for file in files:
-            current_file = os.path.join(root, file)
-            if not current_file.endswith('.json'):
+    for file in os.listdir(directory_path):
+        current_file = os.path.join(directory_path, file)
+        if not os.path.isfile(current_file) or not current_file.endswith('.json'):
+            continue
+        bug_data = {}
+        with open(current_file, 'r') as f:
+            data = json.load(f)
+            if 'id' not in data or 'results' not in data or 'truth' not in data:
+                print(f"Invalid data in file: {current_file}")
                 continue
-            bug_data = {}
-            with open(current_file, 'r') as f:
-                data = json.load(f)
-                if 'id' not in data or 'results' not in data or 'truth' not in data:
-                    print(f"Invalid data in file: {current_file}")
-                    continue
-            bug_data['id'] = data['id']
-            bug_data['suspicious_file_data'] = data['results']
-            bug_data['fixed_files'] = data['truth']
-            bugs.append(bug_data)
+        bug_data['id'] = data['id']
+        bug_data['suspicious_file_data'] = data['results']
+        bug_data['fixed_files'] = data['truth']
+        bugs.append(bug_data)
 
     return bugs
 
