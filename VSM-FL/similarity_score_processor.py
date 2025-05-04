@@ -31,6 +31,8 @@ def get_bug_data(directory_path):
     for root, dirs, files in os.walk(directory_path):
         for file in files:
             current_file = os.path.join(root, file)
+            if not current_file.endswith('.json'):
+                continue
             bug_data = {}
             with open(current_file, 'r') as file:
                 data = json.load(file)
