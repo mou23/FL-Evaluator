@@ -3,12 +3,12 @@ import sys
 import csv
 
 project_name =sys.argv[1]
-result_directory = sys.argv[2] #'../../dataset/temp/BugLocator_test_run'
+result_directory = sys.argv[2] #'../../dataset/temp/BLUiR_test_run_2/recommended'
 bug_report_file = sys.argv[3] #'../../dataset/aspectj-filtered.xml'
 bug_data = get_bug_data_with_similarity_score(bug_report_file, result_directory)
 
 
-def calculate_avg_similarity_scores():
+def process_similarity_scores():
     with open(f"similarity_score_{project_name}.csv", mode='w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["bug_id", "avg_score", "similarity_score_of_first_correct_file"])
@@ -30,4 +30,4 @@ def calculate_avg_similarity_scores():
 
             writer.writerow([current_bug_data["bug_id"], avg_score, similarity_score_of_first_correct_file])
 
-calculate_avg_similarity_scores()
+process_similarity_scores()
