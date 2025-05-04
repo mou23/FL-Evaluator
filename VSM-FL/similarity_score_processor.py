@@ -15,15 +15,14 @@ def process_similarity_scores():
                 score += v
             avg_score = score / top_k
 
-            fixed_files = current_bug_data['files'].split('.java')
-            fixed_files = [(file + '.java').strip() for file in fixed_files[:-1]]
+            fixed_files = current_bug_data['fixed_files']
             similarity_score_of_first_correct_file = None
             for k, v in current_bug_data['suspicious_file_data'].items():
                 if k in fixed_files:
                     similarity_score_of_first_correct_file = v
                     break
 
-            writer.writerow([current_bug_data["bug_id"], avg_score, similarity_score_of_first_correct_file])
+            writer.writerow([current_bug_data["id"], avg_score, similarity_score_of_first_correct_file])
            
 
 def get_bug_data(directory_path):
