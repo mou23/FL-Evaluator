@@ -36,7 +36,8 @@ def get_bug_data(directory_path):
             bug_data = {}
             with open(current_file, 'r') as file:
                 data = json.load(file)
-
+                if 'id' not in data or 'results' not in data or 'truth' not in data:
+                    print(data.keys())
             bug_data['id'] = data['id']
             bug_data['suspicious_file_data'] = data['results']
             bug_data['fixed_files'] = data['truth']
