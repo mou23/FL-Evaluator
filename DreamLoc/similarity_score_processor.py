@@ -22,7 +22,7 @@ def process_similarity_scores():
                     score += v
                 avg_score = score / top_k
 
-                fixed_files = current_bug_data['files'].split('.java')
+                fixed_files = current_bug_data['fixed_files'].split('.java')
                 fixed_files = [(file + '.java').strip() for file in fixed_files[:-1]]
                 similarity_score_of_first_correct_file = None
                 for k, v in current_bug_data['suspicious_file_data'].items():
