@@ -5,7 +5,7 @@ import csv
 project_name =sys.argv[1]
 result_file = sys.argv[2] #'tomcat_ranked_result_mapped.csv'
 bug_report_file = sys.argv[3] #'../../dataset/tomcat-updated-data.xml'
-type = int(sys.argv[4])
+type = sys.argv[4]
 index = int(sys.argv[5])
 bug_data = get_bug_data_with_similarity_score(bug_report_file, result_file, index)
 
