@@ -35,7 +35,7 @@ def extract_suspicious_file_data_for_all_bugs(result_file):
             for row in reader:
                 bug_id = row['Bug-ID']
                 filename = row['Path']
-                score = row['Value']
+                score = float(row['Value'])
                 if bug_id in bug_wise_suspicious_files:
                     bug_wise_suspicious_files[bug_id].append((filename,score))
                 else:
