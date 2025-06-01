@@ -67,7 +67,7 @@ def get_bug_data_with_similarity_score(xml_path, result_file, index=0):
 
     for bug in test_bugs:
         bug_id = bug['bug_id']
-        if bug_id in bug_wise_suspicious_file_data:
+        if bug_id in bug_ids:
             file_score_list = bug_wise_suspicious_file_data[bug_id]
             bug['suspicious_file_data'] = dict(file_score_list)
         else:

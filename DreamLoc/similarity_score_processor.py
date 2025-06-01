@@ -18,7 +18,10 @@ def process_similarity_scores():
             score = 0
             top_k = 10
             avg_score = None
+            
             try:
+                if len(current_bug_data['suspicious_file_data']) == 0:
+                    continue
                 for k, v in list(current_bug_data['suspicious_file_data'].items())[:top_k]:
                     score += v
                 avg_score = score / top_k
@@ -30,7 +33,7 @@ def process_similarity_scores():
                     if k in fixed_files:
                         similarity_score_of_first_correct_file = v
                         break
-
+                
                 writer.writerow([current_bug_data["bug_id"], avg_score, similarity_score_of_first_correct_file])
             except Exception as Error:
                 print(f"Error processing bug {current_bug_data['bug_id']}: {str(Error)}")
