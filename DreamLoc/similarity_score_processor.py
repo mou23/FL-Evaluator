@@ -5,11 +5,12 @@ import csv
 project_name =sys.argv[1]
 result_file = sys.argv[2] #'tomcat_ranked_result_mapped.csv'
 bug_report_file = sys.argv[3] #'../../dataset/tomcat-updated-data.xml'
-index = int(sys.argv[4])
+type = int(sys.argv[4])
+index = int(sys.argv[5])
 bug_data = get_bug_data_with_similarity_score(bug_report_file, result_file, index)
 
 def process_similarity_scores():
-    with open(f"similarity_score_{project_name}.csv", mode='w', newline='') as f:
+    with open(f"{type}_similarity_score_{project_name}.csv", mode='w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["bug_id", "avg_score", "similarity_score_of_first_correct_file"])
 
