@@ -17,6 +17,7 @@ def process_similarity_scores():
         for current_bug_data in bug_data:
             score = 0
             top_k = 10
+            avg_score = None
             try:
                 for k, v in list(current_bug_data['suspicious_file_data'].items())[:top_k]:
                     score += v
