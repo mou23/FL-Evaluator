@@ -24,3 +24,30 @@ def extract_suspicious_filenames_for_all_bugs(result_file):
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return None
+    
+def extract_suspicious_file_data_for_all_bugs(result_file):
+    bug_wise_suspicious_files = {}
+    
+    try:
+        with open(result_file, 'r', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            
+            for row in reader:
+                bug_id = row['Bug-ID']
+                filename = row['Path']
+                score_str = row['Value']
+                score = float(score_str[1:len(score_str)-1])
+
+                if bug_id in bug_wise_suspicious_files:
+                    bug_wise_suspicious_files[bug_id].append((filename,score))
+                else:
+                    bug_wise_suspicious_files[bug_id] = [(filename, score)]
+                    
+        return bug_wise_suspicious_files
+    
+    except FileNotFoundError:
+        print(f"Error: The file {result_file} was not found.")
+        return None
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None

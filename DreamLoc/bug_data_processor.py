@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from suspicious_filenames_retriever import extract_suspicious_filenames_for_all_bugs
+from suspicious_filenames_retriever import extract_suspicious_filenames_for_all_bugs, extract_suspicious_file_data_for_all_bugs
 
 def get_bug_data(xml_path,result_file, index=0):
     bug_wise_suspicious_filenames = extract_suspicious_filenames_for_all_bugs(result_file)
@@ -33,5 +33,44 @@ def get_bug_data(xml_path,result_file, index=0):
             bug['suspicious_files'] = ','.join(list_of_suspicious_filenames)
         else:
             bug['suspicious_files'] = ''
+
+    return test_bugs
+
+
+def get_bug_data_with_similarity_score(xml_path, result_file, index=0):
+    bug_wise_suspicious_file_data = extract_suspicious_file_data_for_all_bugs(result_file)
+    bug_ids = list(bug_wise_suspicious_file_data.keys())
+
+    bugs = []
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+    for element in root.findall(".//table"):
+        bug_id = element[1].text
+        fixed_commit_time = element[8].text
+        fixed_files = element[9].text
+
+        bug_data = {
+            "bug_id": bug_id,
+            "fixed_commit_time": fixed_commit_time,
+            "fixed_files": fixed_files
+        }
+        bugs.append(bug_data)
+
+    bugs = sorted(bugs, key=lambda d: d['fixed_commit_time'])
+
+    length = len(bugs)
+    if index==0:
+        starting_index = length - int(length*0.4)
+    else:
+        starting_index = index
+    test_bugs = bugs[starting_index:length]
+
+    for bug in test_bugs:
+        bug_id = bug['bug_id']
+        if bug_id in bug_ids:
+            file_score_list = bug_wise_suspicious_file_data[bug_id]
+            bug['suspicious_file_data'] = dict(file_score_list)
+        else:
+            bug['suspicious_file_data'] = {}
 
     return test_bugs
